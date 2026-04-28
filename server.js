@@ -63,9 +63,6 @@ app.get("/api/sheet-data", async (_request, response) => {
     const sheets = google.sheets("v4");
 
 
-    meta.data.sheets.forEach(s =>
-      console.log("👉 SHEET:", JSON.stringify(s.properties.title))
-    );
 
     // 1️⃣ Fetch both sheets
   const [teamsRes, paymentsRes] = await Promise.all([
