@@ -50,15 +50,16 @@ app.get("/api/sheet-data", async (_request, response) => {
       scopes: SCOPES,
     });
 
-    const clean = (str) => {
-      return str
-        ?.toString()
-        .toLowerCase()
-        .normalize("NFKD")              // 🔥 handles weird unicode
-        .replace(/\s+/g, "")            // remove ALL spaces
-        .replace(/[^a-z0-9]/g, "")      // remove symbols
-        .trim();
-    };
+  const clean = (str) => {
+    return str
+      ?.toString()
+      .toLowerCase()
+      .normalize("NFKD")
+      .replace(/\u00A0/g, "")        // remove non-breaking space
+      .replace(/\s+/g, "")           // remove ALL spaces
+      .replace(/[^\w]/g, "")         // remove non-alphanumeric
+      .trim();
+  };
 
     const sheets = google.sheets("v4");
 
