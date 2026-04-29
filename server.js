@@ -92,27 +92,40 @@ app.get("/api/sheet-data", async (_request, response) => {
   });
 
     
-    const headers = teamsRes.data.values[0];
-    const teamNameIndex = headers.findIndex(h =>
-      h.toLowerCase().includes("team name")
-    );
-    
-    // 3️⃣ Merge
-    const merged = teams.map((team) => {
-    
-    const teamName = clean(team[teamNameIndex]);
+  const headers = teamsRes.data.values[0];
 
-    console.log("TEAM KEY:", teamName);
+  const getIndex = (name) =>
+    headers.findIndex(h =>
+      h?.toString().toLowerCase().includes(name)
+    );
+      
+  const idx = {
+    teamNo: getIndex("team no"),
+    teamName: getIndex("team name"),
+    leader: getIndex("team leader"),
+    members: getIndex("team members"),
+    phone: getIndex("leader phone"),
+    email: getIndex("leader email"),
+    project: getIndex("project title"),  // 🔥 FIX
+    domain: getIndex("domain"),          // 🔥 FIX
+    };
+    
+    console.log("INDEXES:", idx);
+
+  // 3️⃣ Merge (CLEAN STRUCTURE)
+  const merged = teams.map((team) => {
+    const teamName = clean(team[idx.teamName]);
     const payment = paymentMap.get(teamName);
 
-    if (!payment) {
-      console.log("❌ NO MATCH:", teamName);
-    } else {
-      console.log("✅ MATCH:", teamName);
-    }
-
     return [
-      ...team,
+      team[idx.teamNo],
+      team[idx.teamName],
+      team[idx.leader],
+      team[idx.members],   // ✅ FIXED (was breaking UI)
+      team[idx.phone],
+      team[idx.email],
+      team[idx.project],
+      team[idx.domain],
       payment?.[7] || "Not Paid",
       payment?.[8] || "-",
       payment?.[9] || "-",
