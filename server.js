@@ -90,9 +90,17 @@ app.get("/api/sheet-data", async (_request, response) => {
     paymentMap.set(teamName, row);
   });
 
+    
+    const headers = teamsRes.data.values[0];
+    const teamNameIndex = headers.findIndex(h =>
+      h.toLowerCase().includes("team name")
+    );
+    
     // 3️⃣ Merge
-  const merged = teams.map((team) => {
-    const teamName = clean(team[1]); // from Sheet7
+    const merged = teams.map((team) => {
+    
+    const teamName = clean(team[teamNameIndex]);
+
     console.log("TEAM KEY:", teamName);
     const payment = paymentMap.get(teamName);
 
